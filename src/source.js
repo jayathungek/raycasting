@@ -1,7 +1,7 @@
 class Source{
 	constructor(pos){
-		this.mass = 0.75;
 		this.pos = pos;
+		this.mass = 0.75;
 		this.damping = 0.1;
 		this.vel = createVector(0, 0);
 		this.acc = createVector(0, 0);

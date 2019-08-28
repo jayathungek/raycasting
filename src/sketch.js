@@ -1,20 +1,31 @@
-let light;
-let walls = [];
-let w = 600;
-let h = 600;
+let NORMAL_MODE = 0;
+let FREEDRAW_MODE = 1;
+let POLY_MODE = 2;
 let LEFT_KEY = 37; // p5.js keycodes
 let RIGHT_KEY = 39;
 let UP_KEY = 38;
 let DOWN_KEY = 40;
+let FREEDRAW_MODE_MSG = "Free draw mode";
+let POLY_MODE_MSG = "Polygon draw mode";
+
+let light;
+let walls = [];
+let w = 600;
+let h = 600;
+let TEXT_X = w - 150;
+let TEXT_Y = 20;
+let TEXT_SIZE = 15;
 var buildMode;
 var boundaryStarted;
 var newBoundStart = null;
 var newBoundInt = null;
 var newBoundEnd = null;
+var MODE;
 
 function setup() {
 	createCanvas(w, h);
-	buildMode = true;
+	MODE = NORMAL_MODE
+	// buildMode = true;
 	boundaryStarted = false;
 	var pos = createVector(w/2, h/2);
 	boundRoom();
@@ -27,7 +38,7 @@ function draw() {
 	background(0);
 	var mousePos = createVector(mouseX, mouseY);
 	light.decayAcceleration();
-	if(buildMode){
+	if(MODE != NORMAL_MODE){
 
 	}else{
 		// light.setAccWithMouse(mousePos);
@@ -49,10 +60,10 @@ function draw() {
 		light.updateHeading(mousePos);
 		light.update();
 	}
+	displayMode();
 	light.castRays(walls);
 	light.draw();
 	for(let wall of walls){
-		// wall.draw();
 		wall.drawFancy();
 		wall.collisionPoints=[];
 	}
@@ -76,10 +87,20 @@ function boundRoom(){
 }
 
 function keyPressed(){
-	
 	if (keyCode == SHIFT){
-		buildMode = !buildMode;
-		console.log("toggle buildMode");
+		switchMode();
+		switch(MODE){
+			case NORMAL_MODE:
+
+			case FREEDRAW_MODE:
+
+			case POLY_MODE:
+
+			default:
+				break;
+
+		}
+		console.log("MODE: ", MODE);
 	}else if(keyCode == CONTROL){
 		light.switchRays();
 		console.log("toggle Rays");
@@ -87,7 +108,7 @@ function keyPressed(){
 }
 
 function mouseDragged(){
-	if(buildMode){
+	if(MODE == FREEDRAW_MODE){
 		var mousePos = createVector(mouseX, mouseY);
 		if(!boundaryStarted){
 			boundaryStarted = true;
@@ -104,7 +125,7 @@ function mouseDragged(){
 }
 
 function mouseClicked(){
-	if(buildMode){
+	if(MODE == FREEDRAW_MODE){
 		var mousePos = createVector(mouseX, mouseY);
 		if(!boundaryStarted){
 			boundaryStarted = true;
@@ -122,7 +143,7 @@ function mouseClicked(){
 }
 
 function mouseMoved(){
-	if(buildMode && boundaryStarted && (newBoundStart != null)){
+	if((MODE == FREEDRAW_MODE) && boundaryStarted && (newBoundStart != null)){
 		if(newBoundInt != null){
 			walls.pop();
 		}
@@ -130,6 +151,29 @@ function mouseMoved(){
 		newBoundInt = mousePos;
 		var newWall = new Boundary(newBoundStart, newBoundInt);
 		walls.push(newWall);
+	}
+}
+
+function switchMode(){
+	MODE = (MODE + 1) % 3;
+}
+
+function displayMode(){
+	textSize(TEXT_SIZE);
+	fill(255);
+	stroke(255);
+	switch(MODE){
+		case FREEDRAW_MODE:
+			text(FREEDRAW_MODE_MSG, TEXT_X, TEXT_Y);
+			break;
+		
+		case POLY_MODE:
+			text(POLY_MODE_MSG, TEXT_X, TEXT_Y);
+			break;
+
+		default:
+			break;
+
 	}
 }
 
