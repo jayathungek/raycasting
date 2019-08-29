@@ -1,0 +1,20 @@
+Key insight
+
+[img/diagram.png]
+w0_collision_points = [p2, p3, p4, p5, p6, p7, p8]
+w1_collision_points = [p0, p1, null, p9, p10]
+
+How to appropriately place a null in the collision points array?
+
+for each point px of s, keep track of which wx it collides with and which wx px-1 collided with:
+1. if px didn't with the same wx as px-1, add a null to the the collision points array of wx. also add px to wx. continue to px+1 (skip next step).
+2. add px to collision points of wx
+
+To calculate the illuminated segments wx_segements of each wall:
+1. add 1st collision point in wx_collision_points.
+2. if a null is encountered in the wx_collision_points, add the collision points on either side of the null to wx_segments
+3. Add the last collision point of wx_collision_points to wx_segements.
+
+This algorithm makes sure that each wall in the simulation maintains a list of points along its length. Each pair  of points corresponds to an illuminated segment. Therefore, the array wx_segments must have an even number of elements (this is checked in the draw function).  
+
+
