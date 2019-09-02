@@ -14,6 +14,8 @@ let w = 600;
 let h = 600;
 let TEXT_X = w - 150;
 let TEXT_Y = 20;
+let POS_TEXT_X = w - 150;
+let POS_TEXT_Y = 35;
 let TEXT_SIZE = 15;
 var buildMode;
 var boundaryStarted;
@@ -25,13 +27,24 @@ var MODE;
 function setup() {
 	createCanvas(w, h);
 	MODE = NORMAL_MODE
-	// buildMode = true;
 	boundaryStarted = false;
 	var pos = createVector(w/2, h/2);
 	boundRoom();
 
+	var hw_start = createVector(100, 200);
+	var hw_end = createVector(500, 200);
+	var h_wall = new Boundary(hw_start, hw_end);
+
+	var vw_start = createVector(90, 300);
+	var vw_end = createVector(90, 500);
+	var v_wall = new Boundary(vw_start, vw_end);
+	
+	// walls.push(h_wall);
+	// walls.push(v_wall);
+
 	light = new Source(pos);
 	light.populateRays();
+
 }
 
 function draw() {
@@ -41,28 +54,29 @@ function draw() {
 	if(MODE != NORMAL_MODE){
 
 	}else{
-		// light.setAccWithMouse(mousePos);
 		if(keyIsDown(UP_KEY)){
-			light.setAccWithKeys(UP_KEY);
+			light.setAccWithKeys(UP_KEY, mousePos);
 		}
 
 		if(keyIsDown(DOWN_KEY)){
-			light.setAccWithKeys(DOWN_KEY);
+			light.setAccWithKeys(DOWN_KEY, mousePos);
 		}
 
 		if(keyIsDown(LEFT_KEY)){
-			light.setAccWithKeys(LEFT_KEY);
+			light.setAccWithKeys(LEFT_KEY, mousePos);
 		}
 
 		if(keyIsDown(RIGHT_KEY)){
-			light.setAccWithKeys(RIGHT_KEY);
+			light.setAccWithKeys(RIGHT_KEY, mousePos);
 		}
+		light.collide(walls);
 		light.updateHeading(mousePos);
 		light.update();
 	}
 	displayMode();
 	light.castRays(walls);
 	light.draw();
+	
 	for(let wall of walls){
 		wall.drawFancy();
 		wall.collisionPoints=[];
@@ -80,10 +94,7 @@ function boundRoom(){
 	let left = new Boundary(topLeft, bottomLeft);
 	let right = new Boundary(topRight, bottomRight);
 
-	walls.push(top);
-	walls.push(bottom);
-	walls.push(left);
-	walls.push(right);
+	walls.push(top, bottom, left, right);
 }
 
 function keyPressed(){
@@ -132,9 +143,6 @@ function mouseClicked(){
 			newBoundStart = mousePos;
 		}else{
 			boundaryStarted = false;
-			newBoundEnd = mousePos;
-			var newWall = new Boundary(newBoundStart, newBoundEnd);
-			walls.push(newWall);
 			newBoundStart = null;
 			newBoundInt = null;
 			newBoundEnd = null;
@@ -162,13 +170,16 @@ function displayMode(){
 	textSize(TEXT_SIZE);
 	fill(255);
 	stroke(255);
+	let pos = "("+mouseX+", "+mouseY+")";
 	switch(MODE){
 		case FREEDRAW_MODE:
 			text(FREEDRAW_MODE_MSG, TEXT_X, TEXT_Y);
+			text(pos, POS_TEXT_X, POS_TEXT_Y);
 			break;
 		
 		case POLY_MODE:
 			text(POLY_MODE_MSG, TEXT_X, TEXT_Y);
+			text(pos, POS_TEXT_X, POS_TEXT_Y);
 			break;
 
 		default:
@@ -176,6 +187,7 @@ function displayMode(){
 
 	}
 }
+
 
 // function mouseReleased(){
 // 	if(boundaryStarted && (newBoundStart != null) && buildMode ){

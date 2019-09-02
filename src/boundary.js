@@ -34,6 +34,14 @@ class Boundary{
 		this.segments = segments;
 	}
 
+	isHorizontal(){
+		return this.start.y == this.end.y;
+	}
+
+	isVertical(){
+		return this.start.x == this.end.x;
+	}
+
 	drawFancy(){
 		stroke(255);
 		this.getIlluminatedSegments();
