@@ -8,7 +8,7 @@ class Source{
 		this.acc = createVector(0, 0);
 		this.maxVel = createVector(5, 5);
 		this.rayGap = 0.3; // degrees
-		this.fov = 100 //degrees
+		this.fov = 120 //degrees
 		this.rays = [];
 		this.toggleRays = false;
 		this.mouseLag = 50; // deprecated
@@ -50,9 +50,9 @@ class Source{
 		}
 	}
 
-	createImpulse(dir, mult){
-		this.acc.x = mult*dir.x;
-		this.acc.y = mult*dir.y;
+	createImpulse(dir, multX, multY){
+		this.acc.x = (multX + this.accStep)*dir.x;
+		this.acc.y = (multY + this.accStep)*dir.y;
 	}
 
 	collide(boundaries){
@@ -86,9 +86,10 @@ class Source{
 				}
 				
 				let dir = p5.Vector.sub(this.pos, coord).normalize();
-				let mult = (1/distance)*10;
+				let multX = -Math.abs(this.acc.x);
+				let multY = -Math.abs(this.acc.y);
 
-				this.createImpulse(dir, mult);
+				this.createImpulse(dir, multX, multY);
 			}
 
 		}
