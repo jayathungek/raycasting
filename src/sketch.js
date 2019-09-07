@@ -9,7 +9,9 @@ let FREEDRAW_MODE_MSG = "Free draw mode";
 let POLY_MODE_MSG = "Polygon draw mode";
 
 let light;
-let walls = [];
+var walls = [];
+var prey = [];
+
 let w = 600;
 let h = 600;
 let TEXT_X = w - 150;
@@ -30,20 +32,27 @@ function setup() {
 	boundaryStarted = false;
 	var pos = createVector(w/2, h/2);
 	boundRoom();
-
-	var hw_start = createVector(100, 200);
-	var hw_end = createVector(500, 200);
-	var h_wall = new Boundary(hw_start, hw_end);
-
-	var vw_start = createVector(90, 300);
-	var vw_end = createVector(90, 500);
-	var v_wall = new Boundary(vw_start, vw_end);
 	
+	var v_wallstart = createVector(100, 100);
+	var v_wallend = createVector(100, 300);
+	var v_wall = new Boundary(v_wallstart, v_wallend);
+
+	var h_wallstart = createVector(200, 100);
+	var h_wallend = createVector(500, 100);
+	var h_wall = new Boundary(h_wallstart, h_wallend);
+
 	// walls.push(h_wall);
 	// walls.push(v_wall);
 
+
 	light = new Source(pos);
 	light.populateRays();
+
+	for (var i = 0; i < 1; i++){
+		var preyPos = createVector((1+i)*100, (1+i)*100);
+		var newPrey = new Prey(preyPos);
+		prey.push(newPrey);
+	}
 
 }
 
@@ -77,9 +86,17 @@ function draw() {
 	light.castRays(walls);
 	light.draw();
 	
-	for(let wall of walls){
-		wall.drawFancy();
+	for(var wall of walls){
+		if(MODE != NORMAL_MODE){
+			wall.draw();	
+		}else{
+			wall.drawFancy();
+		}
 		wall.collisionPoints=[];
+	}
+
+	for(var p of prey){
+		p.draw(light);
 	}
 }
 

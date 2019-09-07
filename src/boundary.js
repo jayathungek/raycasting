@@ -57,7 +57,7 @@ class Boundary{
 	}
 	
 	draw(){
-		stroke(255);
+		stroke(120);
 		line(this.start.x, this.start.y, this.end.x, this.end.y);
 		
 	}

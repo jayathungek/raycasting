@@ -1,14 +1,13 @@
 class Source{
 	constructor(pos){
 		this.pos = pos;
-		this.lastPos = pos;
 		this.mass = 0.75;
 		this.damping = 0.15;
 		this.vel = createVector(0, 0);
 		this.acc = createVector(0, 0);
 		this.maxVel = createVector(5, 5);
 		this.rayGap = 0.3; // degrees
-		this.fov = 120 //degrees
+		this.fov = 100 //degrees
 		this.rays = [];
 		this.toggleRays = false;
 		this.mouseLag = 50; // deprecated
@@ -61,17 +60,7 @@ class Source{
 			let x0 = this.pos.x;
 			let y0 = this.pos.y;
 
-			let x1 = b.start.x;
-			let y1 = b.start.y;
-
-			let x2 = b.end.x;
-			let y2 = b.end.y;
-
-			let denominator = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
-			let numerator = Math.abs( (x0 * (y2 - y1)) - (y0 * (x2 - x1)) + (x2 * y1) - (y2 * x1));
-			let distance = numerator/denominator;
-
-			if (distance <= this.radius && this.withinSegment(b)){
+			if (Util.collides(line, this)){
 				let lineEq = Util.getLineCoefficients(line);
 				let k = Util.getCircleCoefficient(this.pos, this.radius);
 				var coord;				
@@ -90,32 +79,8 @@ class Source{
 				let multY = -Math.abs(this.acc.y);
 
 				this.createImpulse(dir, multX, multY);
+				console.log("collision at (", coord.x, ", ", coord.y, ")");
 			}
-
-		}
-	}
-
-	withinSegment(boundary){
-		let x0 = this.pos.x;
-		let y0 = this.pos.y;
-
-		let x1 = (boundary.start.x < boundary.end.x) ? boundary.start.x : boundary.end.x;
-		let y1 = (boundary.start.y < boundary.end.y) ? boundary.start.y : boundary.end.y;
-
-		let x2 = (boundary.end.x > boundary.start.x) ? boundary.end.x : boundary.start.x;
-		let y2 = (boundary.end.y > boundary.start.y) ? boundary.end.y : boundary.start.y;
-
-		let withinboundsX = (x0 > x1 && x0 < x2);
-		let withinboundsY = (y0 > y1 && y0 < y2);
-
-		if(boundary.isHorizontal()){
-			return withinboundsX;
-
-		}else if(boundary.isVertical()){
-			return withinboundsY;
-
-		}else{
-			return withinboundsX && withinboundsY;
 
 		}
 	}
@@ -178,7 +143,6 @@ class Source{
 	update(){
 		let xVel = this.acc.x/this.mass;
 		let yVel = this.acc.y/this.mass; 
-		this.lastPos = this.pos;
 		
 		if(xVel < this.maxVel.x){
 			this.pos.x = this.pos.x + xVel;
