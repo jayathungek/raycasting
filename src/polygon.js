@@ -2,7 +2,7 @@ class Polygon{
 	constructor(points){
 		this.points = points;
 		this.bounds = [];
-		this.pos = pos; //centroid
+		this.pos = null; //centroid
 		this.mass = 0.75;
 		this.damping = 0.1;
 		this.vel = createVector(0, 0);
@@ -50,9 +50,9 @@ class Polygon{
 		this.pos.y = this.pos.y + this.vel.y;
 	}
 
-	draw(){
-		for (var bound of this.bounds){
-			bound.drawFancy();
-		}
-	}
+	// draw(){
+	// 	for (var bound of this.bounds){
+	// 		bound.drawFancy();
+	// 	}
+	// }
 }

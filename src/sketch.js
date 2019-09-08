@@ -11,6 +11,7 @@ let POLY_MODE_MSG = "Polygon draw mode";
 let light;
 var walls = [];
 var prey = [];
+var pbuilder;
 
 let w = 600;
 let h = 600;
@@ -32,7 +33,7 @@ function setup() {
 	boundaryStarted = false;
 	var pos = createVector(w/2, h/2);
 	boundRoom();
-	
+	pbuilder = new PolygonBuilder();
 	var v_wallstart = createVector(100, 100);
 	var v_wallend = createVector(100, 300);
 	var v_wall = new Boundary(v_wallstart, v_wallend);
@@ -82,9 +83,10 @@ function draw() {
 		light.updateHeading(mousePos);
 		light.update();
 	}
-	displayMode();
-	light.castRays(walls);
-	light.draw();
+	
+	if(MODE != NORMAL_MODE){
+		pbuilder.drawVertices();
+	}
 	
 	for(var wall of walls){
 		if(MODE != NORMAL_MODE){
@@ -98,6 +100,10 @@ function draw() {
 	for(var p of prey){
 		p.draw(light);
 	}
+
+	displayMode();
+	light.draw();
+	light.castRays(walls);
 }
 
 function boundRoom(){
@@ -153,8 +159,8 @@ function mouseDragged(){
 }
 
 function mouseClicked(){
+	var mousePos = createVector(mouseX, mouseY);
 	if(MODE == FREEDRAW_MODE){
-		var mousePos = createVector(mouseX, mouseY);
 		if(!boundaryStarted){
 			boundaryStarted = true;
 			newBoundStart = mousePos;
@@ -164,6 +170,14 @@ function mouseClicked(){
 			newBoundInt = null;
 			newBoundEnd = null;
 		}
+	}else if(MODE == POLY_MODE){
+		if(pbuilder.addPoint(mousePos)){
+			var newPolygon = pbuilder.polygons[pbuilder.polygons.length-1];
+			for (var b of newPolygon.bounds){
+				walls.push(b);
+			}
+
+		}	
 	}
 }
 

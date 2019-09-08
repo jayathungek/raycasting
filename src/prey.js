@@ -12,16 +12,14 @@ class Prey{
 		this.accStep = 1.2;
 		this.decStep = 0.05;
 		this.radius = 10;
-		this.hiddenColour = color("#0C7FC3");
-		this.foundColour = color("#D65C5C");
+		this.foundColour = color("#919191");
 	}
 
 	draw(seeker){
 		if(Util.withinLineOfSight(this, seeker)){
 			fill(this.foundColour);
 		}else{
-			fill(this.hiddenColour);
-			// noFill();
+			noFill();
 		}
 		noStroke();
 		ellipse(this.pos.x, this.pos.y, this.radius*2, this.radius*2);

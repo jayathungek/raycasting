@@ -1,44 +1,64 @@
 class PolygonBuilder{
 	constructor(){
-		this.pointThreshold = 10; //pixels
+		this.pointThreshold = 50; //pixels
 		this.startedPolygon = false;
 		
 		this.polygons = [];
 		this.currPolygonPoints = [];
 		this.polyStart = createVector(0, 0);
+
+		this.vertexRadius = 2.5;
+		this.vertexColour = color("#EDB4B4");
+
+		this.newPolygonsExist = false;
 	}
 
 	addPoint(point){
+		var point_rounded = Util.roundToNearest(point, this.pointThreshold);
 		if (!this.startedPolygon){
 			this.startedPolygon = true;
-			this.polyStart = point;
+			this.polyStart = point_rounded;
 		}else{
-			if(this.equals(point, this.polyStart) && (this.currPolygonPoints.length > 2)){
+			if(Util.equals(point_rounded, this.polyStart) && (this.currPolygonPoints.length > 2)){
 				this.startedPolygon = false;
-				this.currPolygonPoints.push(this.roundToNearest(point, this.pointThreshold));
 				var newP = new Polygon(this.currPolygonPoints);
+				newP.setCentreOfMass();
+				newP.setBounds();
 				this.polygons.push(newP);
 				this.currPolygonPoints = [];
-				return;
+				this.newPolygonsExist = true;
+				return true;
 			}
 		}
-		this.currPolygonPoints.push(this.roundToNearest(point, this.pointThreshold));
+		this.currPolygonPoints.push(Util.roundToNearest(point, this.pointThreshold));
+		console.log("added point: ", point_rounded.x, point_rounded.y);
+		return false;
 	}
 
-	equals(p1, p2){
-		return (p1.x == p2.x) && (p1.y == p2.y);
-	}
-
-	roundToNearest(point, inc){
-		var rounded = createVector(0, 0);
-		rounded.x = Math.round(point.x/ inc) * inc;
-		rounded.y = Math.round(point.y/ inc) * inc;
-		return rounded;
-	}
-
-	drawPolygons(){
+	getPolygonsAsBoundaries(){
+		var boundaries = [];
 		for(var p of this.polygons){
-			p.draw();
+			for (var b of p.bounds){
+				boundaries.push(b);
+			}
+		}
+		this.newPolygonsExist = false;
+		return boundaries
+	}
+
+	
+
+	// drawPolygons(){
+		// for(var p of this.polygons){
+		// 	p.draw();
+		// }
+	// }
+
+	drawVertices(){
+		fill(this.vertexColour);
+		noStroke();
+		for(var p of this.currPolygonPoints){
+			ellipse(p.x, p.y, this.vertexRadius*2, this.vertexRadius*2);
 		}
 	}
 

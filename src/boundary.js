@@ -4,6 +4,7 @@ class Boundary{
 		this.end = end;
 		this.collisionPoints = [];
 		this.segments = [];
+		this.partOfPrey = false;
 	}
 
 

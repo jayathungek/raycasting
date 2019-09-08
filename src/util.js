@@ -33,6 +33,17 @@ class Util{
 
 	}
 
+	static equals(p1, p2){
+		return (p1.x == p2.x) && (p1.y == p2.y);
+	}
+
+	static roundToNearest(point, inc){
+		var rounded = createVector(0, 0);
+		rounded.x = Math.round(point.x/ inc) * inc;
+		rounded.y = Math.round(point.y/ inc) * inc;
+		return rounded;
+	}
+
 	static withinSegment(boundary, pos){
 		let x0 = pos.x;
 		let y0 = pos.y;
